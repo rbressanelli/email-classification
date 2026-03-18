@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Smart Email Triage</title>
+    <link rel="stylesheet" href="/static/styles.css" />
+  </head>
+  <body>
+    <main class="page">
+      <section class="hero card">
+        <div>
+          <span class="badge">Desafio AI + Python + Web</span>
+          <h1>Smart Email Triage</h1>
+          <p>
+            Classifique emails em <strong>Produtivo</strong> ou
+            <strong>Improdutivo</strong>, extraia o contexto e gere uma sugestão
+            de resposta em segundos.
+          </p>
+        </div>
+        <div class="hero-stats">
+          <div>
+            <strong>.txt / .pdf</strong>
+            <span>Upload inteligente</span>
+          </div>
+          <div>
+            <strong>IA híbrida</strong>
+            <span>Regra + NLP + LLM</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="grid">
+        <form id="email-form" class="card form-card">
+          <h2>Entrada</h2>
+          <label for="email-text">Cole o email</label>
+          <textarea
+            id="email-text"
+            name="text"
+            placeholder="Ex.: Poderiam me informar o status da solicitação 12345?"
+          ></textarea>
+
+          <label for="email-file">Ou envie um arquivo</label>
+          <input id="email-file" name="file" type="file" accept=".txt,.pdf" />
+
+          <button type="submit" id="submit-btn">Processar email</button>
+          <p class="muted">
+            Você pode usar apenas texto, apenas arquivo ou combinar os dois.
+          </p>
+        </form>
+
+        <section class="card result-card">
+          <div class="result-header">
+            <h2>Resultado</h2>
+            <span id="status-pill" class="pill neutral"
+              >Aguardando análise</span
+            >
+          </div>
+
+          <div id="loading" class="hidden loading-box">
+            <div class="spinner"></div>
+            <span>Analisando conteúdo do email...</span>
+          </div>
+
+          <div id="result" class="hidden">
+            <div class="metrics">
+              <article>
+                <span>Categoria</span>
+                <strong id="category">-</strong>
+              </article>
+              <article>
+                <span>Confiança</span>
+                <strong id="confidence">-</strong>
+              </article>
+            </div>
+
+            <div class="block">
+              <h3>Resumo</h3>
+              <p id="summary"></p>
+            </div>
+
+            <div class="block">
+              <h3>Justificativa</h3>
+              <p id="reasoning"></p>
+            </div>
+
+            <div class="block">
+              <h3>Sinais detectados</h3>
+              <ul id="signals"></ul>
+            </div>
+
+            <div class="block">
+              <h3>Resposta sugerida</h3>
+              <div class="reply-box" id="reply"></div>
+              <button type="button" id="copy-btn" class="secondary">
+                Copiar resposta
+              </button>
+            </div>
+          </div>
+
+          <div id="error-box" class="hidden error-box"></div>
+        </section>
+      </section>
+    </main>
+
+    <script src="/static/app.js"></script>
+  </body>
+</html>
