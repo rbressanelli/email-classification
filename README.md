@@ -29,6 +29,10 @@ A arquitetura foi desenhada como um **modular monolith orientado a serviços**, 
 - Estrutura separada em camadas para facilitar testes e manutenção.
 - Deploy simples em **Render** ou **Hugging Face Spaces (Docker)**.
 
+## Deploy
+Acesso à aplicação hospedada online pelo seguinte link:
+<a href="https://email-classification-1id1.onrender.com/app">email-classification</a>
+
 ## Estrutura
 
 ```bash
