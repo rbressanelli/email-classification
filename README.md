@@ -4,7 +4,20 @@ Aplicação web em **Python + FastAPI + HTML/CSS/JS** para classificar emails em
 
 ## Visão da solução
 
-A arquitetura foi desenhada como um **modular monolith orientado a serviços**, o que facilita desenvolvimento rápido para o desafio e mantém boa separação para evolução futura.
+Este projeto foi criado como solução para um desafio técnico cujo objetivo é automatizar a leitura e triagem de emails corporativos, reduzindo esforço manual e aumentando a produtividade da equipe.
+
+A aplicação permite:
+
+- colar o conteúdo de um email diretamente na interface;
+- fazer upload de arquivos `.txt` e `.pdf`;
+- classificar automaticamente o email como **Produtivo** ou **Improdutivo**;
+- sugerir uma resposta automática coerente com a classificação;
+- exibir sinais detectados, justificativa e nível de confiança.
+
+
+## Deploy
+Acesso à aplicação hospedada online pelo seguinte link:
+<a href="https://email-classification-1id1.onrender.com/app">email-classification</a>
 
 ### Fluxo principal
 
@@ -29,9 +42,6 @@ A arquitetura foi desenhada como um **modular monolith orientado a serviços**, 
 - Estrutura separada em camadas para facilitar testes e manutenção.
 - Deploy simples em **Render** ou **Hugging Face Spaces (Docker)**.
 
-## Deploy
-Acesso à aplicação hospedada online pelo seguinte link:
-<a href="https://email-classification-1id1.onrender.com/app">email-classification</a>
 
 ## Estrutura
 
