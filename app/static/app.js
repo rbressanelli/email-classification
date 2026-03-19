@@ -6,6 +6,10 @@ const errorBox = document.getElementById("error-box");
 const statusPill = document.getElementById("status-pill");
 const copyBtn = document.getElementById("copy-btn");
 
+const clearBtn = document.getElementById("clear-btn");
+const textarea = document.getElementById("email-text");
+const fileInput = document.getElementById("email-file");
+
 form.addEventListener("submit", async (event) => {
   event.preventDefault();
   errorBox.classList.add("hidden");
@@ -59,6 +63,16 @@ form.addEventListener("submit", async (event) => {
     loading.classList.add("hidden");
     submitBtn.disabled = false;
   }
+});
+
+clearBtn.addEventListener("click", () => {
+  textarea.value = "";
+  fileInput.value = "";
+
+  result.classList.add("hidden");
+  errorBox.classList.add("hidden");
+  statusPill.className = "pill neutral";
+  statusPill.innerText = "Aguardando análise";
 });
 
 copyBtn.addEventListener("click", async () => {

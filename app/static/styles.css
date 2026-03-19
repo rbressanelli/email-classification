@@ -123,6 +123,8 @@ button {
 }
 button.secondary {
   background: transparent;
+  border: 1px solid #ccc;
+  margin-top: 8px;
   color: var(--text);
 }
 .muted {
