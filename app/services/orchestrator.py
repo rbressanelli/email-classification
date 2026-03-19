@@ -16,7 +16,7 @@ class EmailAnalysisOrchestrator:
         result = self.classifier.classify(text)
         reply = self.reply_generator.generate(text, result)
         return AnalysisResponse(
-            category=result.label,
+            category=result.label, # type: ignore
             confidence=result.confidence,
             suggested_reply=reply,
             summary=result.summary,

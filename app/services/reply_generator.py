@@ -29,7 +29,7 @@ class ReplyGenerator:
     def _generate_with_llm(
         self, original_text: str, result: ClassificationResult
     ) -> str:
-        completion = self.client.responses.create(
+        completion = self.client.responses.create(  # type: ignore
             model=settings.openai_model,
             input=[
                 {
