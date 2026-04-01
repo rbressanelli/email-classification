@@ -1,7 +1,7 @@
-from __future__ import annotations
-
+import json
 from dataclasses import dataclass
-from typing import List
+from pathlib import Path
+from typing import List, Tuple
 
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.linear_model import LogisticRegression
@@ -9,34 +9,28 @@ from sklearn.pipeline import Pipeline
 
 from app.services.preprocessor import preprocess_text, normalize_text
 
+BASE_DIR = Path(__file__).resolve().parent.parent
+DATA_PATH = BASE_DIR / "data" / "training_data.json"
 
-TRAINING_DATA = [
-    (
-        "Preciso de uma atualização sobre o chamado 4832, o sistema segue indisponível.",
-        1,
-    ),
-    (
-        "Poderiam verificar o erro no acesso ao portal? Não consigo entrar desde ontem.",
-        1,
-    ),
-    ("Encaminho em anexo o contrato solicitado para continuidade da análise.", 1),
-    ("Qual o status da minha requisição de alteração cadastral?", 1),
-    ("Favor confirmar recebimento do documento e próximos passos.", 1),
-    ("Bom dia, seguem evidências do problema identificado em produção.", 1),
-    ("Gostaria de saber quando meu caso será concluído.", 1),
-    (
-        "O arquivo enviado anteriormente estava corrompido; envio novamente para validação.",
-        1,
-    ),
-    ("Obrigado pelo apoio de ontem, excelente trabalho da equipe.", 0),
-    ("Feliz Natal para todos do time.", 0),
-    ("Somente passando para agradecer a ajuda prestada.", 0),
-    ("Parabéns pelo novo sistema, ficou muito bom.", 0),
-    ("Boa tarde, tudo certo por aí?", 0),
-    ("Agradeço pela atenção e desejo um ótimo final de semana.", 0),
-    ("Mensagem de teste sem necessidade de retorno.", 0),
-    ("Boas festas e um próspero ano novo.", 0),
-]
+
+def load_training_data() -> List[Tuple[str, int]]:
+    if not DATA_PATH.exists():
+        return [
+            ("E-mail de exemplo produtivo", 1),
+            ("E-mail de exemplo improdutivo", 0),
+        ]
+
+    with open(DATA_PATH, "r", encoding="utf-8") as f:
+        data = json.load(f)
+
+    combined = []
+    for text in data.get("productive", []):
+        combined.append((text, 1))
+    for text in data.get("unproductive", []):
+        combined.append((text, 0))
+
+    return combined
+
 
 PRODUCTIVE_KEYWORDS = {
     "status",
@@ -63,6 +57,76 @@ PRODUCTIVE_KEYWORDS = {
     "atualização",
     "atualizacao",
     "urgente",
+    "boleto",
+    "fatura",
+    "relatório",
+    "instabilidade",
+    "servidor",
+    "manual",
+    "integração",
+    "atendimento",
+    "atraso",
+    "validação",
+    "validacao",
+    "contrato",
+    "segunda via",
+    "agendar",
+    "reunião",
+    "reuniao",
+    "cancelar",
+    "assinatura",
+    "link",
+    "teste",
+    "confirmar",
+    "catálogo",
+    "catalogo",
+    "premium",
+    "reembolso",
+    "pagamento",
+    "pendente",
+    "atualizar",
+    "dados",
+    "chamada",
+    "entrega",
+    "troca",
+    "fiscal",
+    "nf",
+    "parcelamento",
+    "mobile",
+    "lentidão",
+    "lentidao",
+    "autenticação",
+    "autenticacao",
+    "recuperar",
+    "baixar",
+    "instalador",
+    "orçamento",
+    "orcamento",
+    "licença",
+    "licenca",
+    "cupom",
+    "carrinho",
+    "vaga",
+    "webinar",
+    "cartão",
+    "cartao",
+    "histórico",
+    "historico",
+    "titular",
+    "segurança",
+    "seguranca",
+    "migração",
+    "migracao",
+    "perfil",
+    "whatsapp",
+    "demonstração",
+    "demonstracao",
+    "documentação",
+    "documentacao",
+    "excluir",
+    "login",
+    "python",
+    "limite",
 }
 
 UNPRODUCTIVE_KEYWORDS = {
@@ -80,7 +144,38 @@ UNPRODUCTIVE_KEYWORDS = {
     "sem",
     "necessidade",
     "retorno",
-    "teste",
+    "bom dia",
+    "boa tarde",
+    "boa noite",
+    "finalizado",
+    "resolvido",
+    "anotado",
+    "entendido",
+    "show",
+    "despedida",
+    "aniversário",
+    "aniversario",
+    "indicação",
+    "indicacao",
+    "registro",
+    "conferência",
+    "conferencia",
+    "esclarecido",
+    "dica",
+    "feriado",
+    "apresentação",
+    "apresentacao",
+    "brinde",
+    "incentivo",
+    "feedback",
+    "confraternização",
+    "confraternizacao",
+    "expediente",
+    "didático",
+    "recuperação",
+    "recuperacao",
+    "visita",
+    "encerrar",
 }
 
 
@@ -96,8 +191,9 @@ class ClassificationResult:
 
 class HybridEmailClassifier:
     def __init__(self) -> None:
-        texts = [preprocess_text(text) for text, _ in TRAINING_DATA]
-        labels = [label for _, label in TRAINING_DATA]
+        training_data = load_training_data()
+        texts = [preprocess_text(text) for text, _ in training_data]
+        labels = [label for _, label in training_data]
         self.pipeline = Pipeline(
             steps=[
                 ("tfidf", TfidfVectorizer(ngram_range=(1, 2))),
@@ -131,9 +227,9 @@ class HybridEmailClassifier:
         label = "Produtivo" if is_productive else "Improdutivo"
 
         reasoning = (
-            "O email contém pedido de ação, acompanhamento ou compartilhamento de informação útil."
+            "O email requer uma ação, resposta ou acompanhamento operacional (expectativa de retorno)."
             if is_productive
-            else "O email tem caráter social, cordial ou informativo sem demanda operacional imediata."
+            else "O email é informativo, social ou de encerramento, sem expectativa de resposta imediata."
         )
 
         summary = self._summarize(normalized)
