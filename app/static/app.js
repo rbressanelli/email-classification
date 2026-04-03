@@ -18,20 +18,19 @@ form.addEventListener("submit", async (event) => {
   submitBtn.disabled = true;
   statusPill.textContent = "Processando";
   statusPill.className = "pill neutral";
-
   const data = new FormData(form);
-
+  
   try {
     const response = await fetch("/api/analyze", {
       method: "POST",
       body: data,
     });
-
+    
     const payload = await response.json();
     if (!response.ok) {
       throw new Error(payload.detail || "Falha ao processar email.");
     }
-
+    
     document.getElementById("category").textContent = payload.category;
     document.getElementById("confidence").textContent =
       `${Math.round(payload.confidence * 100)}%`;
@@ -65,14 +64,14 @@ form.addEventListener("submit", async (event) => {
   }
 });
 
+
 clearBtn.addEventListener("click", () => {
   textarea.value = "";
   fileInput.value = "";
-
-  result.classList.add("hidden");
+  resultBox.classList.add("hidden");
   errorBox.classList.add("hidden");
   statusPill.className = "pill neutral";
-  statusPill.innerText = "Aguardando análise";
+  statusPill.textContent = "Aguardando análise";
 });
 
 copyBtn.addEventListener("click", async () => {

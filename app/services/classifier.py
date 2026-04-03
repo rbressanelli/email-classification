@@ -28,6 +28,8 @@ def load_training_data() -> List[Tuple[str, int]]:
         combined.append((text, 1))
     for text in data.get("unproductive", []):
         combined.append((text, 0))
+    for text in data.get("invalid", []):
+        combined.append((text, 0))
 
     return combined
 
@@ -196,7 +198,7 @@ class HybridEmailClassifier:
         labels = [label for _, label in training_data]
         self.pipeline = Pipeline(
             steps=[
-                ("tfidf", TfidfVectorizer(ngram_range=(1, 2))),
+                ("tfidf", TfidfVectorizer(analyzer="char_wb", ngram_range=(2, 5))),
                 ("clf", LogisticRegression(max_iter=1000)),
             ]
         )
@@ -205,6 +207,17 @@ class HybridEmailClassifier:
     def classify(self, text: str) -> ClassificationResult:
         normalized = normalize_text(text)
         processed = preprocess_text(normalized)
+
+        if self._is_gibberish(normalized) or not processed.strip():
+            return ClassificationResult(
+                label="Improdutivo",
+                confidence=0.99,
+                reasoning="O texto não parece conter linguagem natural legível ou um contexto de e-mail válido para análise.",
+                detected_signals=["Sistema: Detecção de conteúdo inválido/gibberish"],
+                summary="[Conteúdo Inválido]",
+                processed_text=processed,
+            )
+
         probabilities = self.pipeline.predict_proba([processed])[0]
         productive_score = float(probabilities[1])
 
@@ -242,6 +255,40 @@ class HybridEmailClassifier:
             summary=summary,
             processed_text=processed,
         )
+
+    def _is_gibberish(self, text: str) -> bool:
+        """Determina se o texto parece ser aleatório ou sem sentido."""
+        import re
+        
+        text = text.strip()
+        if not text:
+            return True
+
+        if len(text) < 3:
+            return True
+
+        words = text.split()
+        if not words:
+            return True
+
+        # 1. Palavras excessivamente longas sem pontuação/símbolos
+        long_words = [w for w in words if len(w) >= 25 and "@" not in w and "/" not in w and "." not in w]
+        if long_words:
+            return True
+
+        # 2. Proporção extrema de vogais/consoantes
+        letters = "".join(filter(str.isalpha, text.lower()))
+        if len(letters) > 8:
+            vowels = sum(1 for char in letters if char in "aeiouáéíóúâêîôûãõàèìòù")
+            ratio = vowels / len(letters)
+            if ratio < 0.15 or ratio > 0.85:
+                return True
+
+        # 3. Sequência excessiva de consoantes
+        if re.search(r"[bcdfghjklmnpqrstvwxyz]{7,}", text.lower()):
+            return True
+
+        return False
 
     @staticmethod
     def _summarize(text: str, limit: int = 180) -> str:
