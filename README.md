@@ -190,3 +190,18 @@ Motivos:
 ```bash
 docker build -t email-ai-challenge .
 docker run --rm -p 8000:8000 email-ai-challenge
+```
+
+### Executando com Docker Compose
+
+Para maior facilidade no desenvolvimento e gerenciamento do container, você pode usar o **Docker Compose**:
+
+```bash
+docker compose up --build
+```
+
+Isso irá:
+1. Construir a imagem.
+2. Carregar as variáveis do arquivo `.env`.
+3. Montar os volumes para refletir alterações no código em tempo real (dentro de `app/` e `data/`).
+4. Expor a porta `8000`.
