@@ -19,10 +19,10 @@ A aplicação permite:
 Acesso à aplicação hospedada no Render, online, pelo seguinte link:
 <a href="https://email-classification-1id1.onrender.com/app" target="_blank" rel="noopener noreferrer">email-classification - Render</a>
 
-Deploy feito também na AWS no seguinte link:
-<a href="http://ec2-15-229-108-74.sa-east-1.compute.amazonaws.com:8000/app" target="_blank" rel="noopener noreferrer">email-classification - AWS</a> 
+<!-- Deploy feito também na AWS no seguinte link: -->
+<!-- <a href="http://ec2-15-229-108-74.sa-east-1.compute.amazonaws.com:8000/app" target="_blank" rel="noopener noreferrer">email-classification - AWS</a>  -->
 
-<span style="color: orange">OBS: Aplicativo na AWS possui agendamento de funcionamento para diminuição de custos.<br> O horário é de 09h às 17h, nos dias úteis.</span>
+<!-- <span style="color: orange">OBS: Aplicativo na AWS possui agendamento de funcionamento para diminuição de custos.<br> O horário é de 09h às 17h, nos dias úteis.</span> -->
 
 ### Fluxo principal
 
